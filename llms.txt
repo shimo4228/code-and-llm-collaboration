@@ -1,0 +1,30 @@
+# code-and-llm-collaboration
+
+> A Claude Code skill (MIT) that catalogs four load-bearing patterns for layering deterministic code and LLM calls in a single pipeline: LLM→Code guard, Code filter→LLM, LLM judge + Code enforce, Code orchestrator + LLM worker. Each pattern ships with when-to-use, failure modes, and a minimal code sketch, plus composition guidance and a 7-question diagnostic checklist.
+
+## Core documentation
+
+- [llms-full.txt](llms-full.txt): self-contained Q&A reference for AI agents (Project Facts, ADR lineage, question-form H2 sections per pattern)
+- [README.md](README.md): human-facing narrative (install, pattern table, curation model)
+- [SKILL.md](skills/code-and-llm-collaboration/SKILL.md): full skill specification — four patterns with when-to-use / failure modes / minimal sketches, composition section, 7-question diagnostic checklist
+
+## Architecture
+
+- 4 layering patterns: **Pattern 1 LLM → Code guard** (LLM proposes, code validates schema + content before persistence), **Pattern 2 Code filter → LLM** (code narrows input structurally, LLM works on the focused slice), **Pattern 3 LLM judge + Code enforce** (LLM judges, code plus optional human gate executes), **Pattern 4 Code orchestrator + LLM worker** (code owns loop, termination, retries; LLM does one focused task per step)
+- Composition model: Pattern 4 wraps everything, each step applies Pattern 2, every output passes Pattern 1, durable-state mutation goes through Pattern 3
+- Diagnostic checklist: 7 questions for reviewing pipeline designs (guard location, loop ownership, filter placement, judge-write-state path, crash resumability, untrusted-content wrapping, retry budget + completion signal)
+- ADR lineage: "how" counterpart to AKC ADR-0008; Pattern 4 underlies ADR-0004 (two-stage distill pipeline), Pattern 3 underlies ADR-0005 (human approval gate)
+- Curation model: manually curated (no script sync) — generalized publication of the operational variant running inside the Contemplative Agent project
+
+## Standard reference
+
+- [Agent Skill specification](https://agentskills.io/specification): the Claude Code skill format used by this repo
+- [SkillsMP marketplace](https://agentskills.io/specification): one-step install via `/skills add`
+
+## Sibling skills
+
+- [when-code-when-llm](https://github.com/shimo4228/when-code-when-llm): the same structural-vs-semantic axis at task level — "which tool for this one property"
+- [search-first](https://github.com/shimo4228/search-first): research-before-coding workflow with a 4-way Adopt / Extend / Compose / Build decision
+- [llms-txt-writer](https://github.com/shimo4228/llms-txt-writer): writes AI-facing docs optimized for ChatGPT / Perplexity / Gemini citation
+- [skill-comply](https://github.com/shimo4228/skill-comply): measures whether agents actually follow skill / rule definitions
+- [context-sync](https://github.com/shimo4228/context-sync): audits and fixes project documentation roles

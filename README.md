@@ -1,5 +1,7 @@
 # code-and-llm-collaboration
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/shimo4228/code-and-llm-collaboration)
+
 An [Agent Skill](https://agentskills.io/specification) that catalogs **four load-bearing patterns for layering deterministic code and LLM calls in one pipeline**. The interesting design question is not "which one should I use?" but "in what order, and with what contract between the layers?" — code owns determinism, auditability, and control flow; the LLM owns meaning; neither owns the other's half.
 
 ## Install

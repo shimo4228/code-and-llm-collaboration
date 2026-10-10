@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Diagnostic checklist: the closing rule judged every question by "no" or "unclear", but questions 1–3 are not yes/no questions and question 4 was asked so that "yes" was the bad answer. A seam is now a question with no answer, an unclear answer, or a wrong one, with the two typical wrong answers named. Question 4 reads "Can the LLM write durable state without a code-enforce step?", so "yes" is plainly the wrong answer.
+
 ## [1.0.0] — 2026-06-12
 
 Initial release as a standalone skill repository.

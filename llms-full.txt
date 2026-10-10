@@ -59,7 +59,7 @@ A full pipeline stacks the four patterns: Pattern 4 (orchestrator) wraps everyth
 
 ## What is the 7-question diagnostic checklist?
 
-The checklist is defined as seven review questions for pipeline designs: (1) Where is the guard — can you point at the function? (2) Who owns the loop — if "the LLM decides when to stop," rewrite it. (3) Is the filter before or after the LLM — structural filtering belongs in code before the LLM. (4) Does a judge-write-state path exist — insert code-enforce, with a human gate for high stakes. (5) Can the pipeline resume after a crash from disk state alone? (6) Is every LLM input wrapped as untrusted content? (7) Is there a retry budget and a deterministic completion signal? A question with no answer, an unclear answer, or a wrong one (the LLM decides when to stop, the LLM writes durable state directly) marks a seam where the layers are colliding instead of collaborating.
+The checklist is defined as seven review questions for pipeline designs: (1) Where is the guard — can you point at the function? (2) Who owns the loop — if "the LLM decides when to stop," rewrite it. (3) Is the filter before or after the LLM — structural filtering belongs in code before the LLM. (4) Can the LLM write durable state without a code-enforce step — if so, insert one, with a human gate for high stakes. (5) Can the pipeline resume after a crash from disk state alone? (6) Is every LLM input wrapped as untrusted content? (7) Is there a retry budget and a deterministic completion signal? A question with no answer, an unclear answer, or a wrong one (the LLM decides when to stop, the LLM writes durable state directly) marks a seam where the layers are colliding instead of collaborating.
 
 ## How does this skill relate to when-code-when-llm?
 

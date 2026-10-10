@@ -191,12 +191,12 @@ Use these when reviewing a pipeline design:
 1. **Where is the guard?** Every LLM output that reaches persistent state must pass a deterministic schema + content check. If you cannot point at the guard function, it does not exist.
 2. **Who owns the loop?** If the answer is "the LLM decides when to stop," rewrite so code owns termination.
 3. **Is the filter before or after the LLM?** If filtering is semantic, it is a different LLM call; if it is structural, it belongs in code *before* the LLM sees the data.
-4. **Does the judge-write-state path exist?** The LLM must not mutate durable state directly. Insert a code-enforce step — with a human gate if the change is high-stakes.
+4. **Can the LLM write durable state without a code-enforce step?** The LLM must not mutate durable state directly. Insert a code-enforce step — with a human gate if the change is high-stakes.
 5. **Can the pipeline resume after a crash from disk state alone?** If no, state is living in the LLM's head and the orchestrator is fiction.
 6. **Is every LLM input wrapped as untrusted content?** The orchestrator should never hand raw accumulated state to the LLM without a boundary marker.
 7. **Is there a retry budget and a deterministic completion signal?** Every loop needs both; "the LLM will know when it's done" is not a design.
 
-If any answer is "no" or "unclear," there is a seam in the design where the layers are not collaborating — they are colliding.
+If any question has no answer, an unclear answer, or a wrong one (the LLM decides when to stop, the LLM writes durable state directly), there is a seam in the design where the layers are not collaborating — they are colliding.
 
 ---
 

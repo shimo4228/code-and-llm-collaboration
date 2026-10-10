@@ -41,7 +41,7 @@ def apply_policy_change(current: str, proposal: str) -> None:
     write_atomic(policy_path, proposal)  # deterministic action
 ```
 
-The skill ends with a 7-question diagnostic checklist for reviewing a pipeline: (1) Where is the guard? (2) Who owns the loop? (3) Is the filter before or after the LLM? (4) Does the judge-write-state path exist (the LLM only judges, and code makes the write)? (5) Can the pipeline resume after a crash from disk state alone? (6) Is every LLM input wrapped as untrusted content, behind a boundary marker (a delimiter that shows the model where untrusted text starts and ends)? (7) Is there a retry budget and a deterministic completion signal? A question with no answer, an unclear answer, or a wrong one (the LLM decides when to stop, the LLM writes durable state directly) marks a seam where the layers collide instead of collaborating.
+The skill ends with a 7-question diagnostic checklist for reviewing a pipeline: (1) Where is the guard? (2) Who owns the loop? (3) Is the filter before or after the LLM? (4) Can the LLM write durable state without a code-enforce step (it should only judge, with code making the write)? (5) Can the pipeline resume after a crash from disk state alone? (6) Is every LLM input wrapped as untrusted content, behind a boundary marker (a delimiter that shows the model where untrusted text starts and ends)? (7) Is there a retry budget and a deterministic completion signal? A question with no answer, an unclear answer, or a wrong one (the LLM decides when to stop, the LLM writes durable state directly) marks a seam where the layers collide instead of collaborating.
 
 ## Where the patterns come from
 

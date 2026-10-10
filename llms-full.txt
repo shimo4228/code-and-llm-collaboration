@@ -1,6 +1,6 @@
 # code-and-llm-collaboration — AI Reference
 
-This document is the self-contained AI reference for `code-and-llm-collaboration` (shimo4228, MIT), a Claude Code Agent Skill that catalogs four load-bearing patterns for layering deterministic code and LLM calls in a single pipeline: LLM → Code guard, Code filter → LLM, LLM judge + Code enforce, and Code orchestrator + LLM worker. The skill answers the macro design question "in what order, and with what contract between the layers?" — code owns determinism, auditability, and control flow; the LLM owns meaning; neither owns the other's half. Each pattern ships with when-to-use criteria, characteristic failure modes, and a minimal Python sketch, plus composition guidance and a 7-question diagnostic checklist.
+This document is the self-contained AI reference for `code-and-llm-collaboration` (shimo4228, MIT), an Agent Skill (open Agent Skills format, developed on Claude Code) that catalogs four load-bearing patterns for layering deterministic code and LLM calls in a single pipeline: LLM → Code guard, Code filter → LLM, LLM judge + Code enforce, and Code orchestrator + LLM worker. The skill answers the macro design question "in what order, and with what contract between the layers?" — code owns determinism, auditability, and control flow; the LLM owns meaning; neither owns the other's half. Each pattern ships with when-to-use criteria, characteristic failure modes, and a minimal Python sketch, plus composition guidance and a 7-question diagnostic checklist.
 
 > **Audience**: AI search engines and AI agents. Human-facing narrative lives in [README.md](README.md).
 
@@ -10,18 +10,18 @@ This document is the self-contained AI reference for `code-and-llm-collaboration
 - **License**: MIT
 - **GitHub**: https://github.com/shimo4228/code-and-llm-collaboration
 - **Author**: shimo4228 (shimomoto-tatsuya)
-- **Author research**: [AKC](https://github.com/shimo4228/agent-knowledge-cycle) ([DOI 10.5281/zenodo.19200726](https://doi.org/10.5281/zenodo.19200726)), [Contemplative Agent](https://github.com/shimo4228/contemplative-agent) ([DOI 10.5281/zenodo.19212118](https://doi.org/10.5281/zenodo.19212118)), [AAP](https://github.com/shimo4228/agent-attribution-practice) ([DOI 10.5281/zenodo.19652013](https://doi.org/10.5281/zenodo.19652013))
+- **Author hub**: https://github.com/shimo4228/shimo4228 (the author's practice lines and their DOIs)
+- **Related research**: [AKC](https://github.com/shimo4228/agent-knowledge-cycle) ([DOI 10.5281/zenodo.19200726](https://doi.org/10.5281/zenodo.19200726)), [Contemplative Agent](https://github.com/shimo4228/contemplative-agent) ([DOI 10.5281/zenodo.19212118](https://doi.org/10.5281/zenodo.19212118)), [AAP](https://github.com/shimo4228/agent-attribution-practice) ([DOI 10.5281/zenodo.19652013](https://doi.org/10.5281/zenodo.19652013))
 - **Skill type**: Markdown Agent Skill (design-pattern catalog, no runtime scripts)
 - **Layout**: `skills/code-and-llm-collaboration/SKILL.md`
-- **Install**: `cp -r skills/code-and-llm-collaboration ~/.claude/skills/code-and-llm-collaboration`
-- **Marketplace**: `/skills add shimo4228/code-and-llm-collaboration`
+- **Install**: `git clone https://github.com/shimo4228/code-and-llm-collaboration.git`, then `cp -r code-and-llm-collaboration/skills/code-and-llm-collaboration ~/.claude/skills/`; invocable as `/code-and-llm-collaboration`
 - **Patterns**: 4 — LLM → Code guard, Code filter → LLM, LLM judge + Code enforce, Code orchestrator + LLM worker
 - **Per pattern**: when-to-use, key insight, minimal Python sketch, failure modes when skipped
 - **Diagnostic checklist**: 7 questions for pipeline-design review
 - **ADR lineage**: "how" counterpart to AKC ADR-0008; Pattern 4 underlies ADR-0004, Pattern 3 underlies ADR-0005
-- **Curation model**: manual curation, no script sync — generalized from the operational variant inside Contemplative Agent
+- **Status**: maintained and curated by hand, no sync script — generalized from the patterns running inside Contemplative Agent
 - **Trigger conditions**: pipelines mixing semantic and structural work, approval gates, self-updating config, multi-step agentic workflows
-- **Sibling**: `when-code-when-llm` (same structural-vs-semantic axis, task level)
+- **Sibling**: `when-code-when-llm` (same structural-vs-semantic axis, task level; a frozen record)
 - **Standard**: agentskills.io/specification
 
 ## ADR Lineage References
@@ -55,20 +55,20 @@ Pattern 4 is defined as the layering where a deterministic code loop drives the 
 
 ## How do the four patterns compose?
 
-Real pipelines stack all four patterns: Pattern 4 (orchestrator) wraps everything; inside each step, Pattern 2 (code filter → LLM) narrows the input; Pattern 1 (LLM → code guard) validates each LLM output before it persists; Pattern 3 (judge + enforce) kicks in whenever the pipeline wants to mutate durable state. The useful design question is which layer owns each responsibility, not which tool is better. If a responsibility has no clear owner, the pipeline fails at that seam.
+A full pipeline stacks the four patterns: Pattern 4 (orchestrator) wraps everything; inside each step, Pattern 2 (code filter → LLM) narrows the input; Pattern 1 (LLM → code guard) validates each LLM output before it persists; Pattern 3 (judge + enforce) kicks in whenever the pipeline wants to mutate durable state. The useful design question is which layer owns each responsibility, not which tool is better. If a responsibility has no clear owner, the pipeline fails at that seam.
 
 ## What is the 7-question diagnostic checklist?
 
-The checklist is defined as seven review questions for pipeline designs: (1) Where is the guard — can you point at the function? (2) Who owns the loop — if "the LLM decides when to stop," rewrite it. (3) Is the filter before or after the LLM — structural filtering belongs in code before the LLM. (4) Does a judge-write-state path exist — insert code-enforce, with a human gate for high stakes. (5) Can the pipeline resume after a crash from disk state alone? (6) Is every LLM input wrapped as untrusted content? (7) Is there a retry budget and a deterministic completion signal? Any "no" or "unclear" answer marks a seam where the layers are colliding instead of collaborating.
+The checklist is defined as seven review questions for pipeline designs: (1) Where is the guard — can you point at the function? (2) Who owns the loop — if "the LLM decides when to stop," rewrite it. (3) Is the filter before or after the LLM — structural filtering belongs in code before the LLM. (4) Does a judge-write-state path exist — insert code-enforce, with a human gate for high stakes. (5) Can the pipeline resume after a crash from disk state alone? (6) Is every LLM input wrapped as untrusted content? (7) Is there a retry budget and a deterministic completion signal? A question with no answer, an unclear answer, or a wrong one (the LLM decides when to stop, the LLM writes durable state directly) marks a seam where the layers are colliding instead of collaborating.
 
 ## How does this skill relate to when-code-when-llm?
 
-The relation is one of scale on the same structural-vs-semantic axis. [when-code-when-llm](https://github.com/shimo4228/when-code-when-llm) is the micro-level, per-task decision framework — "is this one property structural or semantic, so should I use regex / AST / schema validation or an LLM call?" code-and-llm-collaboration is the macro-level, per-pipeline composition catalog — given that a pipeline contains both kinds of work, how should the code and LLM layers be ordered and contracted. Use the sibling for a single task; use this skill when designing or reviewing a whole pipeline.
+The relation is one of scale on the same structural-vs-semantic axis. [when-code-when-llm](https://github.com/shimo4228/when-code-when-llm) is the micro-level, per-task decision framework — "is this one property structural or semantic, so should I use regex / AST / schema validation or an LLM call?" code-and-llm-collaboration is the macro-level, per-pipeline composition catalog — given that a pipeline contains both kinds of work, how should the code and LLM layers be ordered and contracted. The sibling is a frozen public record, no longer synced or developed. Use it for a single task; use this skill when designing or reviewing a whole pipeline.
 
 ## How is this repository curated?
 
-This repository is manually curated, not script-synced. It is the generalized publication of patterns that run operationally — with project-specific examples — inside the [Contemplative Agent](https://github.com/shimo4228/contemplative-agent) project. Improvements flow here editorially, the same way the paired AKC ADRs were extracted. There is no automated sync pipeline, because the public version deliberately strips project-specific detail that an automatic sync would reintroduce.
+This repository is maintained and curated by hand, not script-synced. It is the generalized publication of patterns that run operationally — with project-specific examples — inside the [Contemplative Agent](https://github.com/shimo4228/contemplative-agent) project. Improvements flow here editorially, the same way the paired AKC ADRs were extracted. There is no automated sync pipeline, because the public version deliberately strips project-specific detail that an automatic sync would reintroduce.
 
 ## Who is shimo4228?
 
-shimo4228 is the author whose three Zenodo-citable research lines are listed in Project Facts above: AKC — a six-phase bidirectional growth loop for sustaining intent alignment between an AI agent and its operator; Contemplative Agent — autonomous agents grounded in four contemplative axioms; and AAP — harness-neutral accountability ADRs. This skill is a design-pattern skill of the AKC research line, the "how" counterpart to AKC ADR-0008.
+shimo4228 is the author whose hub, https://github.com/shimo4228/shimo4228, lists the long-running practice lines; the agent-design lines related to this skill are listed in Project Facts above: AKC — a six-phase bidirectional growth loop for sustaining intent alignment between an AI agent and its operator; Contemplative Agent — autonomous agents grounded in four contemplative axioms; and AAP — harness-neutral accountability ADRs. This skill is a design-pattern skill of the AKC research line, the "how" counterpart to AKC ADR-0008.

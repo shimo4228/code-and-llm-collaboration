@@ -5,7 +5,7 @@
 ## Core documentation
 
 - [llms-full.txt](llms-full.txt): self-contained Q&A reference for AI agents (Project Facts, ADR lineage, question-form H2 sections per pattern)
-- [README.md](README.md): human-facing narrative (install, pattern table, curation model)
+- [README.md](README.md): human-facing narrative (install, pattern table, where the patterns come from)
 - [SKILL.md](skills/code-and-llm-collaboration/SKILL.md): full skill specification — four patterns with when-to-use / failure modes / minimal sketches, composition section, 7-question diagnostic checklist
 
 ## Architecture
@@ -14,17 +14,20 @@
 - Composition model: Pattern 4 wraps everything, each step applies Pattern 2, every output passes Pattern 1, durable-state mutation goes through Pattern 3
 - Diagnostic checklist: 7 questions for reviewing pipeline designs (guard location, loop ownership, filter placement, judge-write-state path, crash resumability, untrusted-content wrapping, retry budget + completion signal)
 - ADR lineage: "how" counterpart to AKC ADR-0008; Pattern 4 underlies ADR-0004 (two-stage distill pipeline), Pattern 3 underlies ADR-0005 (human approval gate)
-- Curation model: manually curated (no script sync) — generalized publication of the operational variant running inside the Contemplative Agent project
+- Status: maintained and curated by hand (the repository intentionally has no sync script) — generalized publication of the patterns running inside the Contemplative Agent project
 
 ## Standard reference
 
-- [Agent Skill specification](https://agentskills.io/specification): the Claude Code skill format used by this repo
-- [SkillsMP marketplace](https://agentskills.io/specification): one-step install via `/skills add`
+- [Agent Skill specification](https://agentskills.io/specification): the open Agent Skills format this repo follows (Claude Code and other agents that read Agent Skills)
+- Install: `git clone https://github.com/shimo4228/code-and-llm-collaboration.git`, then `cp -r code-and-llm-collaboration/skills/code-and-llm-collaboration ~/.claude/skills/`
 
 ## Sibling skills
 
-- [when-code-when-llm](https://github.com/shimo4228/when-code-when-llm): the same structural-vs-semantic axis at task level — "which tool for this one property"
-- [search-first](https://github.com/shimo4228/search-first): research-before-coding workflow with a 4-way Adopt / Extend / Compose / Build decision
+- [when-code-when-llm](https://github.com/shimo4228/when-code-when-llm): the same structural-vs-semantic axis at task level — "which tool for this one property"; a frozen public record, no longer synced or developed
+- [llm-as-judge](https://github.com/shimo4228/llm-as-judge): designs the judge half of Pattern 3, with binary checks as evidence and one named verdict instead of a summed score
+- [chaos-tdd-fault-injection](https://github.com/shimo4228/chaos-tdd-fault-injection): tests the guards these patterns call for, by injecting LLM and I/O faults deterministically
+- [search-first](https://github.com/shimo4228/search-first): makes the agent search registries, code, papers and official docs before building; the caller picks Adopt, Adopt-part or Build
 - [llms-txt-writer](https://github.com/shimo4228/llms-txt-writer): writes AI-facing docs optimized for ChatGPT / Perplexity / Gemini citation
 - [skill-comply](https://github.com/shimo4228/skill-comply): measures whether agents actually follow skill / rule definitions
-- [context-sync](https://github.com/shimo4228/context-sync): audits and fixes project documentation roles
+- [context-sync](https://github.com/shimo4228/context-sync): finds overlapping and stale project docs and moves each fact to one home
+- [shimo4228](https://github.com/shimo4228/shimo4228): the author's hub, with the long-running practice lines and their DOIs

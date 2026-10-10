@@ -45,7 +45,7 @@ The skill ends with a 7-question diagnostic checklist for reviewing a pipeline: 
 
 ## Where the patterns come from
 
-This repository is the generalized publication of patterns that run operationally (with project-specific examples) inside the [Contemplative Agent](https://github.com/shimo4228/contemplative-agent) project, the author's long-running agent experiment on a local LLM.
+This repository is the generalized publication of patterns that run operationally (with project-specific examples) inside the [Contemplative Agent](https://github.com/shimo4228/contemplative-agent) project, the author's long-running agent experiment on a local LLM. The same split shows in [pdf2anki](https://github.com/shimo4228/pdf2anki), the author's PDF-to-Anki CLI: code scores every card first, and only cards below the score threshold go to a second LLM call for critique.
 
 ## More from the author
 
